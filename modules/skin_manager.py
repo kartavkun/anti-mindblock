@@ -1,6 +1,7 @@
 import os
 import getpass
 import subprocess
+from PIL import Image, UnidentifiedImageError
 
 username = getpass.getuser()
 
@@ -53,50 +54,51 @@ class Skins:
         print("sosal?")
         return None
 
-def rotate_images():
-    osu_directory = Skins.osu_directory()
-    if not osu_directory:
-        print("Не удалось найти osu! директорию.")
-        return
+class SkinRotater:
+    def rotate_images():
+        osu_directory = Skins.osu_directory()
+        if not osu_directory:
+            print("Не удалось найти osu! директорию.")
+            return
 
-    current_skin = Skins.check_skin(osu_directory)
-    if not current_skin:
-        print("Не удалось определить текущий скин.")
-        return
+        current_skin = Skins.check_skin(osu_directory)
+        if not current_skin:
+            print("Не удалось определить текущий скин.")
+            return
 
-    skins_directory = os.path.join(osu_directory, 'Skins')
-    skin_path = os.path.join(skins_directory, current_skin)
+        skins_directory = os.path.join(osu_directory, 'Skins')
+        skin_path = os.path.join(skins_directory, current_skin)
 
-    if not os.path.exists(skin_path):
-        print("No skin path provided.")
-        return
+        if not os.path.exists(skin_path):
+            print("No skin path provided.")
+            return
 
-    rotate_prefixes = ["default-", "cursor", "spinner", "slider", "play-skip", "hit", "ranking", "section"]
-    transparency_prefixes = ["score", "scorebar"]
+        rotate_prefixes = ["default-", "cursor", "spinner", "slider", "play-skip", "hit", "ranking", "section"]
+        transparency_prefixes = ["score", "scorebar"]
 
-    skin_ini_path = os.path.join(skin_path, "skin.ini")
-    if os.path.exists(skin_ini_path):
-        with open(skin_ini_path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                if line.startswith('HitCirclePrefix:'):
-                    rotate_prefixes.append(line.split(':')[1].strip() + '-')
-                if line.startswith('ScorePrefix:'):
-                    transparency_prefixes.append(line.split(':')[1].strip())
+        skin_ini_path = os.path.join(skin_path, "skin.ini")
+        if os.path.exists(skin_ini_path):
+            with open(skin_ini_path, 'r', encoding='utf-8') as file:
+                for line in file:
+                    line = line.strip()
+                    if line.startswith('HitCirclePrefix:'):
+                        rotate_prefixes.append(line.split(':')[1].strip() + '-')
+                    if line.startswith('ScorePrefix:'):
+                        transparency_prefixes.append(line.split(':')[1].strip())
 
-    temp_folder_path = os.path.join(skin_path, "temp_australia_mode")
-    if not os.path.exists(temp_folder_path):
-        os.makedirs(temp_folder_path)
+        temp_folder_path = os.path.join(skin_path, "temp_australia_mode")
+        if not os.path.exists(temp_folder_path):
+            os.makedirs(temp_folder_path)
 
-    for root, dirs, files in os.walk(skin_path):
-        if root.endswith("temp_australia_mode"):
-            continue
-        for file in files:
-            if file.endswith(".png"):
-                image_path = os.path.join(root, file)
-                temp_image_path = os.path.join(temp_folder_path, file)
-                if any(file.startswith(prefix) for prefix in rotate_prefixes) and not any(file.startswith(prefix) for prefix in transparency_prefixes):
-                    process_image(image_path, temp_image_path, rotate=True)
-                elif any(file.startswith(prefix) for prefix in transparency_prefixes):
-                    process_image(image_path, temp_image_path, transparency=True, rotate=True)
+        for root, dirs, files in os.walk(skin_path):
+            if root.endswith("temp_australia_mode"):
+                continue
+            for file in files:
+                if file.endswith(".png"):
+                    image_path = os.path.join(root, file)
+                    temp_image_path = os.path.join(temp_folder_path, file)
+                    if any(file.startswith(prefix) for prefix in rotate_prefixes) and not any(file.startswith(prefix) for prefix in transparency_prefixes):
+                        process_image(image_path, temp_image_path, rotate=True)
+                    elif any(file.startswith(prefix) for prefix in transparency_prefixes):
+                        process_image(image_path, temp_image_path, transparency=True, rotate=True)
 
