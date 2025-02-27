@@ -1,6 +1,7 @@
 from modules.wayland_checker import SessionChecker
 from modules.xrandr_manager import XrandrManager
 from modules.otd_invert import TabletRotator
+from modules.skin_manager import SkinManager
 
 if __name__ == "__main__":
     session = SessionChecker()
@@ -18,6 +19,9 @@ if __name__ == "__main__":
         if tablet.rotate(180):  # Меняем ротацию
             tablet.restart_driver()
 
+        skin = Skins()
+        skin.rotate_images()
+        
         print("✅ Australia mode activated.")
 
     else:
