@@ -1,7 +1,8 @@
 from modules.wayland_checker import SessionChecker
 from modules.xrandr_manager import XrandrManager
 from modules.otd_invert import TabletRotator
-from modules.skin_manager import SkinRotater
+from modules.skin_manager import Skins
+# from modules.skin_inverter import Skin
 
 if __name__ == "__main__":
     session = SessionChecker()
@@ -19,11 +20,11 @@ if __name__ == "__main__":
         if tablet.rotate(180):  # Меняем ротацию
             tablet.restart_driver()
 
-        skin = SkinRotater()
-        skin.rotate_images()
-        
-        osu_window_title = "osu!"
-        focus_window(osu_window_title)
+        skin_backuper = Skins()
+        skin_backuper.osu_directory()
+
+        # skin = Skin()
+        # skin_inverter.osu_directory()
 
         print("✅ Australia mode activated.")
 
