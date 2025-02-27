@@ -11,6 +11,15 @@ Download the latest release from [here](https://github.com/Kartavkun/anti-mindbl
 
 I don't want to write README for projest that's not ready yet...
 
+## Building
+
+Build with nuitka (install with `pip install nuitka`):
+```bash
+nuitka --standalone --onefile --output-dir=build main.py
+```
+bin file will be in `build` directory.
+Added it because I don't want to forget build command.
+
 TODO:
 - Restoring by a keybind
 - Work with other init systems except systemd
